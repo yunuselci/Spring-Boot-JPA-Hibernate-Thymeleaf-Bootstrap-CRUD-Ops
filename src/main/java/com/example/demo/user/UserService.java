@@ -8,9 +8,10 @@ import java.util.Optional;
 
 @Service
 public class UserService {
-    @Autowired private UserRepository repository;
+    @Autowired
+    private UserRepository repository;
 
-    public List<User> listAll(){
+    public List<User> listAll() {
         return (List<User>) repository.findAll();
     }
 
@@ -20,9 +21,17 @@ public class UserService {
 
     public User get(Integer id) throws UserNotFoundException {
         Optional<User> result = repository.findById(id);
-        if(result.isPresent()){
+        if (result.isPresent()) {
             return result.get();
         }
         throw new UserNotFoundException("İlgili ID ile alakalı User bulunamadı." + id);
+    }
+
+    public void delete(Integer id) throws UserNotFoundException {
+        Long count = repository.countById(id);
+        if (count == null || count == 0) {
+            throw new UserNotFoundException("İlgili ID ile alakalı User bulunamadı." + id);
+        }
+        repository.deleteById(id);
     }
 }
